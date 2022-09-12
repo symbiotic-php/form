@@ -1,0 +1,23 @@
+{
+  "name": "symbiotic/form",
+  "description": "Lightweight forms package, beta version",
+  "license": "MIT",
+  "version": "1.4.0",
+  "require": {
+    "php": ">=8.0",
+    "symbiotic/micro": "^1.4",
+    "symbiotic/form-contracts": "^1.4",
+    "symbiotic/ui_form": "^1.4"
+  },
+  "autoload": {
+    "psr-4": {
+      "Symbiotic\\Form\\": "src/Form"
+    }
+  },
+  "extra": {
+    "symbiotic" : {
+      "providers": "Symbiotic\\Form\\FormProvider"
+    }
+  }
+}
+
