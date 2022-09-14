@@ -2,7 +2,7 @@
   "name": "symbiotic/form",
   "description": "Lightweight forms package, beta version",
   "license": "MIT",
-  "version": "1.4.0",
+  "version": "1.4.0.1",
   "require": {
     "php": ">=8.0",
     "symbiotic/micro": "^1.4",
