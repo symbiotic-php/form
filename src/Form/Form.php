@@ -50,12 +50,38 @@ class Form implements FormInterface
     }
 
     /**
+     * @return array
+     *
+     * @todo It will be necessary to make fields on the classes and give them a collection
+     *
+     */
+    public function getFields(): array
+    {
+        return $this->data['fields'];
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return FillableInterface|null
+     */
+    public function getField(string $name): ?FillableInterface
+    {
+        foreach ($this->formBuilder->getFillable($this->getFields()) as $v) {
+            if ($v->getDotName() === FormBuilder::getDotName($name)) {
+                return $v;
+            }
+        }
+        return null;
+    }
+
+    /**
      * @param string $method
      *
-     * @return FormInterface
+     * @return static
      * @throws FormException
      */
-    public function setMethod(string $method): FormInterface
+    public function setMethod(string $method): static
     {
         if (!in_array(strtolower($method), ['get', 'post'])) {
             throw new FormException(' Invalid method [' . $method . '], only get, post!');
@@ -69,9 +95,9 @@ class Form implements FormInterface
     /**
      * @param string $action
      *
-     * @return FormInterface
+     * @return static
      */
-    public function setAction(string $action): FormInterface
+    public function setAction(string $action): static
     {
         $this->data['action'] = $action;
 
@@ -96,32 +122,23 @@ class Form implements FormInterface
     /**
      * @param array $data
      *
-     * @return void
+     * @return static
      */
-    public function setValues(array $data): void
+    public function setValues(array $data): static
     {
         $this->formBuilder->setValues($this->data['fields'], $data);
+        return $this;
     }
 
-    /**
-     * @return array
-     *
-     * @todo It will be necessary to make fields on the classes and give them a collection
-     *
-     */
-    public function getFields(): array
-    {
-        return $this->data['fields'];
-    }
 
     /**
-     * @param array $data
+     * @param array $values
      *
      * @return FieldsValidator
      */
-    public function getValidator(array $data = []): FieldsValidator
+    public function getValidator(array $values = []): FieldsValidator
     {
-        return new FieldsValidator($this->data['fields'], $data);
+        return new FieldsValidator($this->data['fields'], $values);
     }
 
     /**

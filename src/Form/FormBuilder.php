@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Symbiotic\Form;
 
-use Symbiotic\Form\Fields\{Boolean, Button, Checkbox, Input, Radio, Select, Textarea, Group};
+use Symbiotic\Form\Fields\{Boolean, Button, Checkbox, Html, Input, Radio, Select, Textarea, Group};
 use Psr\Container\ContainerInterface;
 use Symbiotic\Container\CloningContainer;
 use Symbiotic\Container\DIContainerInterface;
@@ -47,6 +47,7 @@ class FormBuilder implements CloningContainer
                 'button' => Button::class,
                 'bool' => Boolean::class,
                 'group' => Group::class,
+                'html' => Html::class
                 /** and virtual input types {@see createField()} **/
             ];
 
@@ -176,6 +177,42 @@ class FormBuilder implements CloningContainer
         return $fields;
     }
 
+    /**
+     * @param array|FieldInterface[] $result
+     *
+     * @return array|FieldInterface[]
+     */
+    public function getCollapsedFieldsArray(array $fields): array
+    {
+        $result = [];
+        foreach ($fields as $field) {
+            if ($field instanceof GroupInterface) {
+                // Do you need support for nested groups?
+                $result = array_merge($result, $field->getFieldsArray());
+            } else {
+                $result[] = $field;
+            }
+        }
+        return $result;
+    }
+
+    /**
+     * @param array|FieldInterface $fields
+     *
+     * @return array|FillableInterface[]
+     */
+    public function getFillable(array $fields): array
+    {
+        return array_filter($this->getCollapsedFieldsArray($fields), function ($v) {
+            return $v instanceof FillableInterface;
+        });
+    }
+
+
+    public static function getDotName(string $name): string
+    {
+        return trim(\str_replace(['][', ']', '['], ['.', '.', '.'], $name), '.');
+    }
 
     /**
      * @param array|FieldInterface[] $fields

@@ -147,7 +147,7 @@ class Group implements GroupInterface
      * @throws \Symbiotic\Core\SymbioticException
      * @throws \Symbiotic\Packages\ResourceExceptionInterface
      */
-    public function __toString()
+    public function __toString():string
     {
         return $this->render();
     }

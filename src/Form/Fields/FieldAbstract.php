@@ -6,7 +6,7 @@ namespace Symbiotic\Form\Fields;
 
 use Symbiotic\Form\FillableInterface;
 use Symbiotic\Form\FormBuilder;
-use Symbiotic\Form\Validator;
+use Symbiotic\Form\ValidatorInterface;
 use Symbiotic\View\ViewFactory;
 
 
@@ -129,7 +129,7 @@ class FieldAbstract implements FillableInterface
      */
     public function getDotName(): string
     {
-        return trim(\str_replace(['][', ']', '['], ['.', '.', '.'], $this->data['name']), '.');
+        return FormBuilder::getDotName($this->data['name']);
     }
 
     /**
@@ -145,7 +145,7 @@ class FieldAbstract implements FillableInterface
      */
     public function getDescription(): string
     {
-        return $this->data['description'];
+        return (string)$this->data['description'];
     }
 
     /**
@@ -179,6 +179,12 @@ class FieldAbstract implements FillableInterface
         return $this->data['validators'];
     }
 
+    public function addValidator(ValidatorInterface $validator): static
+    {
+        $this->data['validators'][] = $validator;
+        return $this;
+    }
+
     /**
      * @param string|array|null $value
      *
@@ -186,17 +192,19 @@ class FieldAbstract implements FillableInterface
      */
     public function validate(string|array|null $value): bool
     {
+        $result = true;
         /**
-         * @var Validator $validator
+         * @var ValidatorInterface $validator
          */
         foreach ($this->data['validators'] as $validator) {
+            // todo: clone validator?
             if (!$validator->validate($value)) {
-                $this->data['error'] .= $validator->getError();
-                return false;
+                $this->data['error'] .= $validator->getError() . ',';
+                $result = false;
                 // todo: array errors...
             }
         }
-        return true;
+        return $result;
     }
 
     /**
@@ -269,7 +277,7 @@ class FieldAbstract implements FillableInterface
      * @return string
      * @throws \Symbiotic\Packages\ResourceExceptionInterface
      */
-    public function __toString()
+    public function __toString(): string
     {
         return $this->render();
     }
