@@ -12,12 +12,15 @@ use Symbiotic\View\ViewFactory;
 
 class FieldAbstract implements FillableInterface
 {
+    use FieldNameTrait;
+
     protected string $template = '';
 
     protected array $data = [
         'label' => '',
         'description' => '',
         'name' => '',
+        'prefix' => '',
         'meta' => [],
         'value' => null,
         'default' => null,
@@ -33,17 +36,6 @@ class FieldAbstract implements FillableInterface
     public function __construct(array $data = [])
     {
         $this->data = array_merge($this->data, $data);
-    }
-
-    /**
-     * @param string $name
-     *
-     * @return $this
-     */
-    public function setName(string $name): static
-    {
-        $this->data['name'] = $name;
-        return $this;
     }
 
     /**
@@ -103,14 +95,6 @@ class FieldAbstract implements FillableInterface
     /**
      * @return string
      */
-    public function getName(): string
-    {
-        return $this->data['name'];
-    }
-
-    /**
-     * @return string
-     */
     public function getLabel(): string
     {
         return $this->data['label'];
@@ -122,14 +106,6 @@ class FieldAbstract implements FillableInterface
     public function getValue(): string|array|null
     {
         return $this->data['value'];
-    }
-
-    /**
-     * @return string
-     */
-    public function getDotName(): string
-    {
-        return FormBuilder::getDotName($this->data['name']);
     }
 
     /**
@@ -161,7 +137,6 @@ class FieldAbstract implements FillableInterface
         return \implode(' ', $attributes);
     }
 
-
     /**
      * @return array
      */
@@ -169,7 +144,6 @@ class FieldAbstract implements FillableInterface
     {
         return $this->data['attributes'];
     }
-
 
     /**
      * @return array
@@ -179,6 +153,11 @@ class FieldAbstract implements FillableInterface
         return $this->data['validators'];
     }
 
+    /**
+     * @param ValidatorInterface $validator
+     *
+     * @return $this
+     */
     public function addValidator(ValidatorInterface $validator): static
     {
         $this->data['validators'][] = $validator;
@@ -220,7 +199,7 @@ class FieldAbstract implements FillableInterface
      *
      * @return $this
      */
-    public function placeholder(string $val): static
+    public function setPlaceholder(string $val): static
     {
         $this->data['placeholder'] = $val;
         return $this;
@@ -280,5 +259,18 @@ class FieldAbstract implements FillableInterface
     public function __toString(): string
     {
         return $this->render();
+    }
+
+    /**
+     * @return void
+     */
+    public function __clone(): void
+    {
+        $this->data['value'] = null;
+        $this->data['error'] = null;
+        foreach ($this->data['validators'] as &$v) {
+            $v = clone $v;
+        }
+        unset($v);
     }
 }

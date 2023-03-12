@@ -9,6 +9,8 @@ abstract class Validator implements ValidatorInterface
 {
     protected array $data = [];
 
+    protected ?string $error = null;
+
     public function __construct(array $data)
     {
         $this->data = $data;
@@ -19,6 +21,11 @@ abstract class Validator implements ValidatorInterface
      */
     public function getError(): ?string
     {
-        return $this->data['message'];
+        return $this->error;
+    }
+
+    public function __clone(): void
+    {
+        $this->error = null;
     }
 }

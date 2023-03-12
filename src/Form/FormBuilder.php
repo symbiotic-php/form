@@ -215,21 +215,16 @@ class FormBuilder implements CloningContainer
     }
 
     /**
-     * @param array|FieldInterface[] $fields
-     * @param array                  $values
+     * @param iterable|FieldInterface[] $fields
+     * @param iterable                  $values
      *
-     * @return array
+     * @return iterable
      */
-    public function setValues(array $fields, array $values): array
+    public function setValues(iterable $fields, iterable $values): iterable
     {
         $values = new Collection($values);
         foreach ($fields as $v) {
-            if ($v instanceof FillableInterface) {
-                $name = $v->getDotName();
-                $v->setValue($values->get($name));
-            } elseif ($v instanceof Group) {
-                $v->setValues($values->toArray());
-            }
+            $v->setValue($values->get($v->getDotName()));
         }
 
         return $fields;
