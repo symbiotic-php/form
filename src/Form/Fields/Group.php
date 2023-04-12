@@ -41,8 +41,9 @@ class Group implements GroupInterface
      */
     public function __construct(array $data, protected FormBuilder $formBuilder)
     {
-        $this->data = array_merge($this->data, $data);
+        $this->data = \array_merge($this->data, $data);
         $fields = $formBuilder->fromArray($this->data['fields']);
+        $this->data['fields'] = [];
         foreach ($fields as $v) {
             $this->add($v);
         }
@@ -61,7 +62,7 @@ class Group implements GroupInterface
             $v->setPrefix($this->getFullName());
         }
 
-        if($this->isMulti()) {
+        if ($this->isMulti()) {
             $this->data['sub_groups'][0] = $this->createSubGroup('0', []);
         }
 
@@ -85,7 +86,7 @@ class Group implements GroupInterface
      *
      * @return $this
      */
-    public function setValues(iterable $data): static
+    public function setValue(array $data): static
     {
         if ($this->isMulti()) {
             foreach ($data as $index => $values) {
@@ -179,7 +180,7 @@ class Group implements GroupInterface
             $field = clone $v;
             $group->add($field);
         }
-        $group->setValues($values);
+        $group->setValue($values);
 
         return $group;
     }
@@ -228,7 +229,7 @@ class Group implements GroupInterface
     /**
      * @return array|mixed
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         return $this->data;
     }

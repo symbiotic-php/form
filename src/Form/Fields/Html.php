@@ -12,10 +12,11 @@ use Symbiotic\View\ViewFactory;
 class Html implements FieldInterface
 {
 
+    use FieldNameTrait;
+
     protected array $data = [
         'value' => ''
     ];
-
 
 
     /**
@@ -25,7 +26,7 @@ class Html implements FieldInterface
 
     public function __construct(array $data = [])
     {
-        $this->data = array_merge($this->data, $data);
+        $this->data = \array_merge($this->data, $data);
     }
 
     /**
@@ -37,7 +38,7 @@ class Html implements FieldInterface
      */
     public function render(string $template = null): string
     {
-       return $this->data['value'];
+        return $this->data['value'];
     }
 
     public function setView(ViewFactory $viewFactory): static
@@ -48,13 +49,13 @@ class Html implements FieldInterface
     }
 
 
-    public function __toString():string
+    public function __toString(): string
     {
         return $this->render();
     }
 
     public function jsonSerialize()
     {
-       return $this->data;
+        return $this->data;
     }
 }

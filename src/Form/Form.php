@@ -25,11 +25,11 @@ class Form implements FormInterface
         array $data,
         protected FormBuilder $formBuilder
     ) {
-        if (!empty($data['fields']) && is_array($data['fields'])) {
+        if (!empty($data['fields']) && \is_array($data['fields'])) {
             $data['fields'] = $this->formBuilder->fromArray($data['fields']);
         }
 
-        $this->data = array_merge($this->data, $data);
+        $this->data = \array_merge($this->data, $data);
     }
 
 
@@ -83,11 +83,11 @@ class Form implements FormInterface
      */
     public function setMethod(string $method): static
     {
-        if (!in_array(strtolower($method), ['get', 'post'])) {
+        if (!\in_array(\strtolower($method), ['get', 'post'])) {
             throw new FormException(' Invalid method [' . $method . '], only get, post!');
         }
 
-        $this->data['method'] = strtolower($method);
+        $this->data['method'] = \strtolower($method);
 
         return $this;
     }
@@ -152,7 +152,7 @@ class Form implements FormInterface
     {
         if (!$template) {
             $template = $this->template;
-            if (!str_contains($template, '::')) {
+            if (!\str_contains($template, '::')) {
                 $template = FormBuilder::getTemplatesPackageId() . '::' . $template;
             }
         }

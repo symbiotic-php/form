@@ -13,6 +13,7 @@ use Symbiotic\View\ViewFactory;
 
 /**
  * Class FormHelper
+ *
  * @package Symbiotic\Form
  *
  * To add fields, subscribe to an event in the
@@ -51,7 +52,7 @@ class FormBuilder implements CloningContainer
                 /** and virtual input types {@see createField()} **/
             ];
 
-            if (function_exists('_S\\event')) {
+            if (\function_exists('_S\\event')) {
                 \_S\event($this->container, $this);
             }
         }
@@ -130,7 +131,7 @@ class FormBuilder implements CloningContainer
         if (isset($types[$type])) {
             $class = $types[$type];
         } elseif (
-            in_array(
+            \in_array(
                 $type,
                 [
                     'text',
@@ -168,7 +169,7 @@ class FormBuilder implements CloningContainer
     public function fromArray(array $fields): array
     {
         foreach ($fields as &$v) {
-            if (is_array($v)) {
+            if (\is_array($v)) {
                 $v = $this->createField($v['type'], $v);
             }
         }
@@ -188,7 +189,7 @@ class FormBuilder implements CloningContainer
         foreach ($fields as $field) {
             if ($field instanceof GroupInterface) {
                 // Do you need support for nested groups?
-                $result = array_merge($result, $field->getFieldsArray());
+                $result = \array_merge($result, $field->getFieldsArray());
             } else {
                 $result[] = $field;
             }
@@ -203,7 +204,7 @@ class FormBuilder implements CloningContainer
      */
     public function getFillable(array $fields): array
     {
-        return array_filter($this->getCollapsedFieldsArray($fields), function ($v) {
+        return \array_filter($this->getCollapsedFieldsArray($fields), function ($v) {
             return $v instanceof FillableInterface;
         });
     }
@@ -211,7 +212,7 @@ class FormBuilder implements CloningContainer
 
     public static function getDotName(string $name): string
     {
-        return trim(\str_replace(['][', ']', '['], ['.', '.', '.'], $name), '.');
+        return \trim(\str_replace(['][', ']', '['], ['.', '.', '.'], $name), '.');
     }
 
     /**
@@ -224,7 +225,15 @@ class FormBuilder implements CloningContainer
     {
         $values = new Collection($values);
         foreach ($fields as $v) {
-            $v->setValue($values->get($v->getDotName()));
+            if ($v instanceof GroupInterface) {
+                if ($v->getFullName() === '') {
+                    $v->setValue($values->all());
+                } else {
+                    $v->setValue($values->get($v->getDotName(), []));
+                }
+            } else {
+                $v->setValue($values->get($v->getDotName()));
+            }
         }
 
         return $fields;

@@ -35,7 +35,7 @@ class FieldAbstract implements FillableInterface
 
     public function __construct(array $data = [])
     {
-        $this->data = array_merge($this->data, $data);
+        $this->data = \array_merge($this->data, $data);
     }
 
     /**
@@ -113,7 +113,7 @@ class FieldAbstract implements FillableInterface
      */
     public function getDefault(): string|array|null
     {
-        return is_null($this->data['default']) ? null : (string)$this->data['default'];
+        return \is_null($this->data['default']) ? null : (string)$this->data['default'];
     }
 
     /**
@@ -224,7 +224,7 @@ class FieldAbstract implements FillableInterface
     {
         if (!$template) {
             $template = $this->template;
-            if (!str_contains($template, '::')) {
+            if (!\str_contains($template, '::')) {
                 $template = FormBuilder::getTemplatesPackageId() . '::' . $template;
             }
         }
@@ -249,7 +249,7 @@ class FieldAbstract implements FillableInterface
      */
     public function jsonSerialize(): array
     {
-        return array_merge($this->data, ['template' => $this->template]);
+        return \array_merge($this->data, ['template' => $this->template]);
     }
 
     /**

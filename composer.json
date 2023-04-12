@@ -2,12 +2,12 @@
   "name": "symbiotic/form",
   "description": "Lightweight forms package, beta version",
   "license": "MIT",
-  "version": "1.4.1.2",
+  "version": "1.4.2",
   "require": {
     "php": ">=8.0",
     "symbiotic/micro": "^1.4",
-    "symbiotic/form-contracts": "^1.4.1",
-    "symbiotic/ui_form": "^1.4.1"
+    "symbiotic/form-contracts": "^1.4.2",
+    "symbiotic/ui_form": "^1.4.2"
   },
   "autoload": {
     "psr-4": {

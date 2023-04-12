@@ -26,6 +26,7 @@ abstract class FieldSelectable extends FieldAbstract implements FieldSelectableI
     public function variants(array $variants): static
     {
         $this->data['variants'] = $variants;
+
         return $this;
     }
 
